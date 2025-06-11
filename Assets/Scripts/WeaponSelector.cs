@@ -24,7 +24,7 @@ public class WeaponSelector : MonoBehaviour
         weaponSelect.gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         weaponPrefab = weaponBehavior.data.weaponPrefab.gameObject;
-        Vector3 instPos = weaponHolder.transform + Vector3();
+        //Vector3 instPos = weaponHolder.transform + Vector3();
         Instantiate(weaponPrefab, weaponHolder.transform);
     }
 
