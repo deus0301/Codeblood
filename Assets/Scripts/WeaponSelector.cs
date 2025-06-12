@@ -19,7 +19,7 @@ public class WeaponSelector : MonoBehaviour
 
     public void ChooseWeapon()
     {
-        int index = weaponSelect.value;
+        int index = weaponSelect.value-1;
         weaponBehavior.data = allWeapons[index];
         weaponSelect.gameObject.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;

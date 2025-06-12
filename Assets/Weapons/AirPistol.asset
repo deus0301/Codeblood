@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Air Pistol
   damage: 75
+  range: 30
   cooldown: 1.5
   elementType: 4
   weaponPrefab: {fileID: 8397009666085789436, guid: 8f46b1a64f4fe864d9807939208dd877, type: 3}

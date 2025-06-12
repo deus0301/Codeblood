@@ -4,7 +4,8 @@ using UnityEngine;
 public class WeaponData : ScriptableObject
 {
     public string weaponName;
-    public float damage;
+    public int damage;
+    public float range;
     public float cooldown;
     public ElementType elementType; // enum for Ice, Fire, etc.
     public GameObject weaponPrefab;

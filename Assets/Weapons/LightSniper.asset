@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Light Sniper
   damage: 30
+  range: 50
   cooldown: 1
   elementType: 5
   weaponPrefab: {fileID: 4873076314062299931, guid: 57a6e141dd198a5449a1e0b41c403c93, type: 3}

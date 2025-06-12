@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Ice Axe
   damage: 50
+  range: 3
   cooldown: 1.2
   elementType: 0
-  weaponPrefab: {fileID: 2821723820822260965, guid: 95c73697ba0ffbf4c94908891d592658, type: 3}
+  weaponPrefab: {fileID: 6749919342462639476, guid: 028b35d91cbbfb544a4b5281d2381ba5, type: 3}

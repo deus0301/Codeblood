@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Fire Chains
   damage: 30
+  range: 5
   cooldown: 1
   elementType: 1
   weaponPrefab: {fileID: 6159231759629661468, guid: 853225eb5dc86f54e80d2e5414c3caa6, type: 3}

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Water Bow
   damage: 50
+  range: 30
   cooldown: 1.5
   elementType: 3
   weaponPrefab: {fileID: 486613714232305351, guid: 77cdc96f4bee02c44908c773e7d1af74, type: 3}
