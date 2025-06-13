@@ -14,6 +14,7 @@ public class PlayerAttack : MonoBehaviour
     public LayerMask attackLayer;
 
     //public GameObject hitEffect;
+    public ParticleSystem bulletTracer;
     public GameObject cam;
     //public AudioClip swordSwing;
     //public AudioClip hitSound;
@@ -36,17 +37,21 @@ public class PlayerAttack : MonoBehaviour
             weapon = weaponBehaviour.data;
             attackDamage = weapon.damage;
             attackDistance = weapon.range;
+            bulletTracer = GameObject.Find("Bullet").GetComponent<ParticleSystem>();
         }
     }
     public void Attack()
     {
         if (!readyToAttack || attacking) return;
+        if(bulletTracer == null) return;
 
         readyToAttack = false;
         attacking = true;
 
         Invoke(nameof(ResetAttack), attackSpeed);
         Invoke(nameof(AttackRaycast), attackDelay);
+
+        bulletTracer.Play();
 
         //audioSource.pitch = Random.Range(0.9f, 1.1f);
         //audioSource.PlayOneShot(swordSwing);

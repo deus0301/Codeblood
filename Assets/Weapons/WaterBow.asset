@@ -17,4 +17,4 @@ MonoBehaviour:
   range: 30
   cooldown: 1.5
   elementType: 3
-  weaponPrefab: {fileID: 486613714232305351, guid: 77cdc96f4bee02c44908c773e7d1af74, type: 3}
+  weaponPrefab: {fileID: 6525702013367540125, guid: c88d403790ea04d4fb8a3adb8effe183, type: 3}
