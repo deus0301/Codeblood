@@ -11,7 +11,7 @@ public class PlayerAbilites : MonoBehaviour
     public GameObject cam;
 
     public float normalCooldown = 5f;
-    public float ultimateCooldown = 10f;
+    public float ultimateCooldown = 60f;
 
     private bool canUseNormal = true;
     private bool canUseUltimate = false;
@@ -38,11 +38,25 @@ public class PlayerAbilites : MonoBehaviour
 
     public void Ability()
     {
-        StartCoroutine("UseAbility");
+        if (canUseNormal)
+        {
+            StartCoroutine("UseAbility");
+        }
+        else
+        {
+            Debug.Log("Cant Use shit");
+        }
     }
     public void Ultimate()
     {
-        StartCoroutine("UseUltimate");
+        if (canUseUltimate)
+        {
+            StartCoroutine("UseUltimate");
+        }
+        else
+        {
+            Debug.Log("Cant Use shit");
+        }
     }
 
     void CastAbility(ElementType type)
