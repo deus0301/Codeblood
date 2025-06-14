@@ -9,6 +9,14 @@ public class WeaponSelector : MonoBehaviour
     public GameObject weaponHolder;
     public GameObject weaponPrefab;
     public GameObject currentWeaponInstance;
+    
+    public TMP_Dropdown bossSelect;
+    public GameObject[] Bosses;
+    public GameObject bossSpawn;
+    public GameObject currentBossInstance;
+
+    private bool weaponChosen = false;
+    private bool bossChosen = false;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -23,17 +31,31 @@ public class WeaponSelector : MonoBehaviour
         int index = weaponSelect.value - 1;
         weaponBehavior.data = allWeapons[index];
         weaponSelect.gameObject.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
+        weaponChosen = true;
         weaponPrefab = weaponBehavior.data.weaponPrefab.gameObject;
-        //Vector3 instPos = weaponHolder.transform + Vector3();
         currentWeaponInstance = Instantiate(weaponPrefab, weaponHolder.transform);
         
         GetComponent<PlayerAttack>().SetWeaponInstance(currentWeaponInstance);
     }
 
+    public void ChooseBoss()
+    {
+        int index = bossSelect.value - 1;
+        bossSelect.gameObject.SetActive(false);
+        bossChosen = true;
+        GameObject boss = Bosses[index];
+        currentBossInstance = Instantiate(boss, bossSpawn.transform);
+
+        GetComponent<BossController>().SetBossInstance(currentBossInstance);
+    }
+
     // Update is called once per frame
     void Update()
     {
+        if(weaponChosen && bossChosen)
+        { 
+            Cursor.lockState = CursorLockMode.Locked;
+        }
         
     }
 }

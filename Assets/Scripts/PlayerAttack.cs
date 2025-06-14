@@ -34,6 +34,8 @@ public class PlayerAttack : MonoBehaviour
     int attackCount;
     private GameObject weaponInstance;
 
+    PlayerAbilites abilities;
+
 
     private void Start()
     {
@@ -47,6 +49,7 @@ public class PlayerAttack : MonoBehaviour
             attackDamage = weapon.damage;
             attackDistance = weapon.range;
             attackSpeed = weapon.cooldown;
+            abilities = gameObject.GetComponent<PlayerAbilites>();
             if (weapon.weaponPrefab.gameObject.layer == LayerMask.NameToLayer("Ranged")) { bulletTracer = GameObject.Find("Bullet").GetComponent<ParticleSystem>(); }
         }
     }
@@ -59,6 +62,7 @@ public class PlayerAttack : MonoBehaviour
 
         Invoke(nameof(ResetAttack), attackSpeed);
         Invoke(nameof(AttackRaycast), attackDelay);
+        Debug.DrawRay(cam.transform.position, cam.transform.forward * attackDistance, Color.red, 2f);
 
         if (weapon != null)
         {
@@ -85,6 +89,7 @@ public class PlayerAttack : MonoBehaviour
             return;
         }
 
+        abilities.TrackMove("normal_" + weapon.elementType.ToString().ToLower());
 
         //audioSource.pitch = Random.Range(0.9f, 1.1f);
         //audioSource.PlayOneShot(swordSwing);
@@ -100,9 +105,9 @@ public class PlayerAttack : MonoBehaviour
     {
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, attackDistance, attackLayer))
         {
-
+            Debug.Log("You hitting shit nigga");
             if (hit.transform.TryGetComponent<Enemy>(out Enemy T))
-            { T.TakeDamage(attackDamage); }
+            { Debug.Log("Took Damage"); T.TakeDamage(attackDamage); }
         }
     }
 
@@ -113,7 +118,7 @@ public class PlayerAttack : MonoBehaviour
         currentAnimationState = newState;
         animator.Play(currentAnimationState);
     }
-    
+
     public void SetWeaponInstance(GameObject instance)
     {
         weaponInstance = instance;

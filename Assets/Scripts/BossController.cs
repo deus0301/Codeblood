@@ -11,6 +11,7 @@ public class BossController : MonoBehaviour
 
     private NavMeshAgent agent;
     private float lastAttackTime;
+    private GameObject bossInstance;
 
     void Start()
     {
@@ -29,7 +30,7 @@ public class BossController : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, player.position);
 
-         if (distance <= attackRange)
+        if (distance <= attackRange)
         {
             // Stop moving to attack
             agent.ResetPath();
@@ -52,7 +53,7 @@ public class BossController : MonoBehaviour
             agent.ResetPath();
         }
     }
-    
+
     void Attack()
     {
         // Replace with actual attack logic or animation trigger
@@ -60,5 +61,10 @@ public class BossController : MonoBehaviour
         player.gameObject.TryGetComponent<PlayerData>(out PlayerData data);
         data.TakeDamage(attackDamage);
 
+    }
+    public void SetBossInstance(GameObject instance)
+    {
+        bossInstance = instance;
+        agent = bossInstance.GetComponent<NavMeshAgent>();
     }
 }

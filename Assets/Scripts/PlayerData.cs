@@ -10,12 +10,19 @@ public class PlayerData : MonoBehaviour
     {
         currentHealth = maxHealth;
     }
+    void Update()
+    {
+        if (transform.position.y <= -1)
+        {
+            GameOver();
+        }
+    }
 
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
 
-        if(currentHealth <= 0)
+        if (currentHealth <= 0)
         { GameOver(); }
     }
 
