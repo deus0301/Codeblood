@@ -7,6 +7,15 @@
       "dependencies": {},
       "hash": "1d8b49b3fee41c09a98141f1f1a5e4db47e14229"
     },
+    "com.unity.ai.navigation": {
+      "version": "2.0.8",
+      "depth": 0,
+      "source": "registry",
+      "dependencies": {
+        "com.unity.modules.ai": "1.0.0"
+      },
+      "url": "https://packages.unity.com"
+    },
     "com.unity.burst": {
       "version": "1.8.21",
       "depth": 2,
@@ -133,26 +142,22 @@
         "com.unity.rendering.light-transport": "1.0.1"
       }
     },
-    "com.unity.render-pipelines.high-definition": {
+    "com.unity.render-pipelines.universal": {
       "version": "17.1.0",
       "depth": 0,
       "source": "builtin",
       "dependencies": {
-        "com.unity.modules.video": "1.0.0",
-        "com.unity.modules.animation": "1.0.0",
-        "com.unity.modules.imageconversion": "1.0.0",
         "com.unity.render-pipelines.core": "17.1.0",
         "com.unity.shadergraph": "17.1.0",
-        "com.unity.visualeffectgraph": "17.1.0",
-        "com.unity.render-pipelines.high-definition-config": "17.1.0"
+        "com.unity.render-pipelines.universal-config": "17.0.3"
       }
     },
-    "com.unity.render-pipelines.high-definition-config": {
-      "version": "17.1.0",
+    "com.unity.render-pipelines.universal-config": {
+      "version": "17.0.3",
       "depth": 1,
       "source": "builtin",
       "dependencies": {
-        "com.unity.render-pipelines.core": "17.1.0"
+        "com.unity.render-pipelines.core": "17.0.3"
       }
     },
     "com.unity.rendering.light-transport": {
@@ -237,15 +242,6 @@
       "dependencies": {
         "com.unity.modules.ui": "1.0.0",
         "com.unity.modules.imgui": "1.0.0"
-      }
-    },
-    "com.unity.visualeffectgraph": {
-      "version": "17.1.0",
-      "depth": 1,
-      "source": "builtin",
-      "dependencies": {
-        "com.unity.shadergraph": "17.1.0",
-        "com.unity.render-pipelines.core": "17.1.0"
       }
     },
     "com.unity.visualscripting": {

@@ -62,7 +62,6 @@ public class PlayerAttack : MonoBehaviour
 
         if (weapon != null)
         {
-            Debug.Log("Weapon Data is not null");
             if (weapon.weaponPrefab.gameObject.layer == LayerMask.NameToLayer("Ranged"))
             {
                 bulletTracer.Play();
@@ -83,7 +82,6 @@ public class PlayerAttack : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Trying to attack, but no weapon animator assigned yet.");
             return;
         }
 
