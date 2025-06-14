@@ -33,36 +33,18 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Alt attack",
-                    "type": "Button",
-                    "id": "00a0ee99-3e78-499d-81d5-cf30a76c46a2",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Ability 1",
-                    "type": "Button",
-                    "id": "2974a867-afb3-49fa-9945-e3b095e7f4d1",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Ability 2",
-                    "type": "Button",
-                    "id": "504cdfe4-d1a1-453b-895e-a84492d2fe99",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Ultimate",
                     "type": "Button",
                     "id": "e1fc2ec1-1467-4311-a035-3a81ead7ef62",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Ability",
+                    "type": "Button",
+                    "id": "c70335af-2266-4da0-9a5c-bf74f912005c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -160,45 +142,23 @@
                 },
                 {
                     "name": "",
-                    "id": "426b1f30-16d4-4bf0-b549-f0b50947c9b3",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Alt attack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "965983a1-f0b3-4cb6-9f35-30aa53f8c1b6",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Ability 1",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "305a8ea5-4d84-4f8e-8d60-0b7c3cb937fb",
-                    "path": "<Keyboard>/e",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Ability 2",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "630016c7-11a7-4531-8731-948776368d65",
                     "path": "<Keyboard>/x",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Ultimate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "174bd91a-4537-4e2b-a5e2-6990ed45428e",
+                    "path": "<Keyboard>/q",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Ability",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

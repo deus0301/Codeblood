@@ -6,10 +6,18 @@ public class PlayerAttack : MonoBehaviour
 {
     PlayerInput playerInput;
 
+    [Header("Animations")]
+
+    public const string ATTACK1 = "Attack1";
+    public const string ATTACK2 = "Attack2";
+
+    public Animator animator;
+    string currentAnimationState;
+
     [Header("Attacking")]
     float attackDistance;
-    public float attackDelay = 0.4f;
-    public float attackSpeed = 1f;
+    public float attackDelay;
+    public float attackSpeed = 0.1667f;
     int attackDamage;
     public LayerMask attackLayer;
 
@@ -24,6 +32,7 @@ public class PlayerAttack : MonoBehaviour
     bool attacking = false;
     bool readyToAttack = true;
     int attackCount;
+    private GameObject weaponInstance;
 
 
     private void Start()
@@ -37,13 +46,13 @@ public class PlayerAttack : MonoBehaviour
             weapon = weaponBehaviour.data;
             attackDamage = weapon.damage;
             attackDistance = weapon.range;
-            bulletTracer = GameObject.Find("Bullet").GetComponent<ParticleSystem>();
+            attackSpeed = weapon.cooldown;
+            if (weapon.weaponPrefab.gameObject.layer == LayerMask.NameToLayer("Ranged")) { bulletTracer = GameObject.Find("Bullet").GetComponent<ParticleSystem>(); }
         }
     }
     public void Attack()
     {
         if (!readyToAttack || attacking) return;
-        if(bulletTracer == null) return;
 
         readyToAttack = false;
         attacking = true;
@@ -51,21 +60,36 @@ public class PlayerAttack : MonoBehaviour
         Invoke(nameof(ResetAttack), attackSpeed);
         Invoke(nameof(AttackRaycast), attackDelay);
 
-        bulletTracer.Play();
+        if (weapon != null)
+        {
+            Debug.Log("Weapon Data is not null");
+            if (weapon.weaponPrefab.gameObject.layer == LayerMask.NameToLayer("Ranged"))
+            {
+                bulletTracer.Play();
+            }
+            else
+            {
+                if (attackCount == 0)
+                {
+                    ChangeAnimationState(ATTACK1);
+                    attackCount++;
+                }
+                else
+                {
+                    ChangeAnimationState(ATTACK2);
+                    attackCount = 0;
+                }
+            }
+        }
+        else
+        {
+            Debug.LogWarning("Trying to attack, but no weapon animator assigned yet.");
+            return;
+        }
+
 
         //audioSource.pitch = Random.Range(0.9f, 1.1f);
         //audioSource.PlayOneShot(swordSwing);
-
-        //if(attackCount == 0)
-        //{
-        //    ChangeAnimationState(ATTACK1);
-        //    attackCount++;
-        //}
-        //else
-        //{
-        //    ChangeAnimationState(ATTACK2);
-        //    attackCount = 0;
-        //}
     }
 
     void ResetAttack()
@@ -78,19 +102,23 @@ public class PlayerAttack : MonoBehaviour
     {
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, attackDistance, attackLayer))
         {
-            //HitTarget(hit.point);
 
             if (hit.transform.TryGetComponent<Enemy>(out Enemy T))
             { T.TakeDamage(attackDamage); }
         }
     }
-    
-    //void HitTarget(Vector3 pos)
-    //{
-    //audioSource.pitch = 1;
-    //audioSource.PlayOneShot(hitSound);
 
-    //GameObject GO = Instantiate(hitEffect, pos, Quaternion.identity);
-    //Destroy(GO, 20);
-    //} 
+    public void ChangeAnimationState(string newState)
+    {
+        if (currentAnimationState == newState) return;
+
+        currentAnimationState = newState;
+        animator.Play(currentAnimationState);
+    }
+    
+    public void SetWeaponInstance(GameObject instance)
+    {
+        weaponInstance = instance;
+        animator = weaponInstance.GetComponent<Animator>();
+    }
 }

@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Bullet
       objectReference: {fileID: 0}
+    - target: {fileID: 8368195038346456768, guid: c930435742a79a94d8505949a7c0a08b, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 8705449886766604319, guid: c930435742a79a94d8505949a7c0a08b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.037
@@ -126,9 +130,21 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -5488313550646068655, guid: d848c2ecacc79b24db456f3e23625916, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -231108923728722665, guid: d848c2ecacc79b24db456f3e23625916, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: d848c2ecacc79b24db456f3e23625916, type: 3}
       propertyPath: m_Name
       value: airpistol
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: d848c2ecacc79b24db456f3e23625916, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4748841551418413425, guid: d848c2ecacc79b24db456f3e23625916, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

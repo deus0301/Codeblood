@@ -68,6 +68,26 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 78eb6682b7d46894ea4d0cb8e9bdc751, type: 2}
+    - target: {fileID: -6914515777550171981, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -3981575814929378422, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -3781552591337382252, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -2451492136029932496, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: -1858676441208196720, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: -29061970989148093, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -76,10 +96,38 @@ PrefabInstance:
       propertyPath: m_Name
       value: lightsniper
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 943778891900017903, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2456693147449290889, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4489821496536665307, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 2100000, guid: 78eb6682b7d46894ea4d0cb8e9bdc751, type: 2}
+    - target: {fileID: 4857385822056661208, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 7053750496565909940, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8216327154067906267, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 8244395442496624218, guid: f970a9d30208b6a47a1c00a1d58270e9, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
@@ -120,6 +168,10 @@ PrefabInstance:
     - target: {fileID: 8368195038346456768, guid: c930435742a79a94d8505949a7c0a08b, type: 3}
       propertyPath: m_Name
       value: Bullet
+      objectReference: {fileID: 0}
+    - target: {fileID: 8368195038346456768, guid: c930435742a79a94d8505949a7c0a08b, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 8705449886766604319, guid: c930435742a79a94d8505949a7c0a08b, type: 3}
       propertyPath: m_LocalPosition.x
