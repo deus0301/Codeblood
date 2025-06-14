@@ -1,7 +1,10 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using NativeWebSocket; // You'll need the NativeWebSocket plugin for this
+using NativeWebSocket;
+
+// We'll need the NativeWebSocket plugin for this | package must be added via Unity Package Manager or downloaded from GitHub 
+// Github link: https://github.com/endel/NativeWebSocket
 
 public class WebSocketManager : MonoBehaviour
 {
@@ -12,7 +15,7 @@ public class WebSocketManager : MonoBehaviour
 
     async void Start()
     {
-        // Connect to your Python server
+        // Connect to the Python server running separately
         websocket = new WebSocket("ws://localhost:8000");
 
         websocket.OnOpen += () =>
