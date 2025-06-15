@@ -16,8 +16,8 @@ public class PlayerAbilites : MonoBehaviour
     private bool canUseNormal = true;
     private bool canUseUltimate = false;
 
-    [SerializeField]
     private Queue<string> recentMoves = new Queue<string>();
+    [SerializeField] private WebSocketManager wsManager;
     private int maxStoredMoves = 5;
 
     void Start()
@@ -142,9 +142,26 @@ public class PlayerAbilites : MonoBehaviour
         if (recentMoves.Count >= maxStoredMoves) recentMoves.Dequeue();
         recentMoves.Enqueue(moveName);
         Debug.Log("Move Tracked: " + moveName);
-        // TODO: Send to WebSocket AI after 5 moves
+        
+        if (recentMoves.Count == maxStoredMoves)
+        {
+            Debug.Log("Moves sent to Enemy AI");
+            AIRequest req = new AIRequest();
+            req.moves = new List<string>(recentMoves);
+            string json = JsonUtility.ToJson(req);
+            wsManager.SendMessageToServer(json);
+
+            recentMoves.Clear(); // Optional
+        }
     }
+
 }
+
+[System.Serializable]
+    public class AIRequest
+    {
+        public List<string> moves;
+    }
 
 /***
 

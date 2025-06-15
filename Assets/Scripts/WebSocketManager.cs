@@ -15,6 +15,7 @@ public class WebSocketManager : MonoBehaviour
 
     async void Start()
     {
+        DontDestroyOnLoad(this.gameObject);
         // Connect to the Python server running separately
         websocket = new WebSocket("ws://localhost:8000");
 
