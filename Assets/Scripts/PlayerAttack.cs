@@ -122,12 +122,27 @@ public class PlayerAttack : MonoBehaviour
     public void SetWeaponInstance(GameObject instance)
     {
         weaponInstance = instance;
-        animator = weaponInstance.GetComponent<Animator>();
-        weapon = weaponBehaviour.data;
-        attackDamage = weapon.damage;
-        attackDistance = weapon.range;
-        attackSpeed = weapon.cooldown;
-        abilities = gameObject.GetComponent<PlayerAbilites>();
-        if (weapon.weaponPrefab.gameObject.layer == LayerMask.NameToLayer("Ranged")) { bulletTracer = GameObject.Find("Bullet").GetComponent<ParticleSystem>(); }
+    animator = weaponInstance.GetComponent<Animator>();
+
+    if (weaponBehaviour == null)
+        weaponBehaviour = GetComponent<WeaponBehaviour>();
+
+    if (weaponBehaviour == null || weaponBehaviour.data == null)
+    {
+        Debug.LogError("WeaponBehaviour or its data is null!");
+        return;
+    }
+
+    weapon = weaponBehaviour.data;
+    attackDamage = weapon.damage;
+    attackDistance = weapon.range;
+    attackSpeed = weapon.cooldown;
+
+    abilities = GetComponent<PlayerAbilites>();
+
+    if (weapon.weaponPrefab != null && weapon.weaponPrefab.layer == LayerMask.NameToLayer("Ranged"))
+    {
+        bulletTracer = GameObject.Find("Bullet")?.GetComponent<ParticleSystem>();
+    }
     }
 }

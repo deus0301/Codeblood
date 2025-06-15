@@ -102,6 +102,7 @@ public class PlayerAbilites : MonoBehaviour
                 break;
             case ElementType.Water:
                 Debug.Log("Casting Piercing Stream");
+                PiercingStream();
                 break;
 
             case ElementType.Air:
@@ -133,6 +134,7 @@ public class PlayerAbilites : MonoBehaviour
                 break;
             case ElementType.Water:
                 Debug.Log("Casting Tidal Barrage");
+                StartCoroutine(TidalBarrage());
                 break;
 
             case ElementType.Air:
@@ -243,7 +245,7 @@ public class PlayerAbilites : MonoBehaviour
         }
     }
 
-    [Header("Fire Chains")]
+    [Header("Fire Abilities")]
 
     float range = 10f;
     float radius = 1.5f;
@@ -322,7 +324,7 @@ public class PlayerAbilites : MonoBehaviour
         }
     }
 
-    [Header("Earth Sword")]
+    [Header("Earth Abilities")]
     public GameObject stonewallPrefab;
     private float stonewallDistance = 4f;
     private float stonewallDuration = 5f;
@@ -371,7 +373,7 @@ public class PlayerAbilites : MonoBehaviour
     }
 
     [Header("Water Abilities")]
-    private GameObject waterArrowPrefab;
+    public GameObject waterArrowPrefab;
     private float arrowRange = 25f;
     private int arrowDamage = 100;
     private float slowDuration = 3f;
@@ -383,12 +385,13 @@ public class PlayerAbilites : MonoBehaviour
 
     void PiercingStream()
     {
-        Vector3 origin = cam.transform.position;
+        Vector3 origin = cam.transform.position + cam.transform.forward * 1.5f;
         Vector3 dir = cam.transform.forward;
 
         if (waterArrowPrefab != null)
-        {
-            GameObject arrow = Instantiate(waterArrowPrefab, origin, Quaternion.LookRotation(dir));
+        {  
+            GameObject arrow = Instantiate(waterArrowPrefab, origin, Quaternion.LookRotation(dir) * Quaternion.Euler(90f, 0f, 0f));
+            arrow.transform.Translate(Vector3.forward);
             Destroy(arrow, 1.5f); // Clean up after short time
         }
         RaycastHit[] hits = Physics.RaycastAll(origin, dir, arrowRange, enemyLayer);
