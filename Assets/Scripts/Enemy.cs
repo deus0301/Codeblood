@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
@@ -31,6 +32,18 @@ public class Enemy : MonoBehaviour
         gameObject.GetComponent<BossController>().enabled = false;
         yield return new WaitForSeconds(freezeDuration);
         gameObject.GetComponent<BossController>().enabled = true;
+    }
+    public void SetSlowed(bool slow)
+    {
+        NavMeshAgent agent = gameObject.GetComponent<NavMeshAgent>();
+        if (slow)
+        {
+            agent.speed = 1f;
+        }
+        else
+        {
+            agent.speed = 4f;
+        }
     }
 
     void Death()

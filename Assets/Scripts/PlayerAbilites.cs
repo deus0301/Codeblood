@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerAbilites : MonoBehaviour
 {
@@ -13,7 +14,7 @@ public class PlayerAbilites : MonoBehaviour
     public BossController boss;
 
     public float normalCooldown = 5f;
-    public float ultimateCooldown = 60f;
+    public float ultimateCooldown = 200f;
 
     private bool canUseNormal = true;
     private bool canUseUltimate = true;
@@ -22,6 +23,9 @@ public class PlayerAbilites : MonoBehaviour
     [SerializeField] private WebSocketManager wsManager;
     private int maxStoredMoves = 1;
     public LayerMask enemyLayer;
+
+    public Button abilityButton;
+    public Button ultButton;
 
     void Start()
     {
@@ -43,9 +47,23 @@ public class PlayerAbilites : MonoBehaviour
             if (GameObject.FindWithTag("Enemy").TryGetComponent<BossController>(out BossController E))
                 boss = E;
         }
-        catch
-        {
+        catch { }
 
+        if (canUseNormal)
+        {
+            abilityButton.interactable = true;
+        }
+        else
+        {
+            abilityButton.interactable = false;
+        }
+        if (canUseUltimate)
+        {
+            ultButton.interactable = true;
+        }
+        else
+        {
+            ultButton.interactable = false;
         }
     }
 
@@ -193,7 +211,7 @@ public class PlayerAbilites : MonoBehaviour
         public bool skill_ready;
         public int action_taken;
     }
-    
+
     void FrostSlam()
     {
         int damage = 200;
@@ -312,7 +330,7 @@ public class PlayerAbilites : MonoBehaviour
     private float shatterRange = 10f;
     private float shatterWidth = 2f;
     private int shatterDamage = 600;
-    private float shatterKnockupForce = 8f;
+    private float shatterKnockupForce = 50f;
 
     private IEnumerator StonewallSlash()
     {
@@ -324,51 +342,139 @@ public class PlayerAbilites : MonoBehaviour
         Destroy(wall);
     }
 
-private IEnumerator TerraShatter()
-{
-    Vector3 origin = transform.position;
-    Vector3 forward = transform.forward;
-
-    Debug.DrawRay(origin, forward * shatterRange, Color.green, 1.5f);
-
-    RaycastHit[] hits = Physics.SphereCastAll(origin, shatterWidth, forward, shatterRange, enemyLayer);
-
-    foreach (RaycastHit hit in hits)
+    private IEnumerator TerraShatter()
     {
-        if (hit.transform.TryGetComponent<Enemy>(out Enemy enemy))
+        Vector3 origin = transform.position;
+        Vector3 forward = transform.forward;
+
+        Debug.DrawRay(origin, forward * shatterRange, Color.green, 1.5f);
+
+        RaycastHit[] hits = Physics.SphereCastAll(origin, shatterWidth, forward, shatterRange, enemyLayer);
+
+        foreach (RaycastHit hit in hits)
         {
-            enemy.TakeDamage(shatterDamage);
-
-            Rigidbody rb = enemy.GetComponent<Rigidbody>();
-            if (rb != null)
+            if (hit.transform.TryGetComponent<Enemy>(out Enemy enemy))
             {
-                rb.AddForce(Vector3.up * shatterKnockupForce, ForceMode.Impulse);
-            }
+                enemy.TakeDamage(shatterDamage);
 
-            Debug.Log("Terra Shatter hit " + enemy.name);
+                Rigidbody rb = enemy.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.AddForce(Vector3.up * shatterKnockupForce, ForceMode.Impulse);
+                }
+
+                Debug.Log("Terra Shatter hit " + enemy.name);
+            }
         }
+
+        yield return null;
     }
 
-    yield return null;
+    [Header("Water Abilities")]
+    private GameObject waterArrowPrefab;
+    private float arrowRange = 25f;
+    private int arrowDamage = 100;
+    private float slowDuration = 3f;
+
+    private float barrageRadius = 8f;
+    private int barrageDamagePerHit = 50;
+    private float barrageTickRate = 0.5f;
+    private float barrageDuration = 4f;
+
+    void PiercingStream()
+    {
+        Vector3 origin = cam.transform.position;
+        Vector3 dir = cam.transform.forward;
+
+        if (waterArrowPrefab != null)
+        {
+            GameObject arrow = Instantiate(waterArrowPrefab, origin, Quaternion.LookRotation(dir));
+            Destroy(arrow, 1.5f); // Clean up after short time
+        }
+        RaycastHit[] hits = Physics.RaycastAll(origin, dir, arrowRange, enemyLayer);
+
+        foreach (var hit in hits)
+        {
+            if (hit.transform.TryGetComponent<Enemy>(out Enemy enemy))
+            {
+                enemy.TakeDamage(arrowDamage);
+                if (enemy.TryGetComponent<Rigidbody>(out Rigidbody rb))
+                {
+                    // Optional: slow effect or drag increase
+                    StartCoroutine(SlowEnemy(enemy, slowDuration));
+                }
+
+                Debug.Log("Piercing Stream hit: " + enemy.name);
+            }
+        }
+
+        // Optional: Visual arrow effect
+        Debug.DrawRay(origin, dir * arrowRange, Color.cyan, 1.5f);
+    }
+
+    private IEnumerator TidalBarrage()
+    {
+        float timer = 0f;
+
+        while (timer < barrageDuration)
+        {
+            // Random point inside radius
+            Vector2 offset = UnityEngine.Random.insideUnitCircle * barrageRadius;
+            Vector3 targetPos = transform.position + new Vector3(offset.x, 0f, offset.y);
+            Vector3 spawnPos = targetPos + Vector3.up * 15f; // 15 units above
+
+            // Instantiate arrow prefab
+            if (waterArrowPrefab != null)
+            {
+                GameObject arrow = Instantiate(waterArrowPrefab, spawnPos, Quaternion.identity);
+                Rigidbody rb = arrow.GetComponent<Rigidbody>();
+
+                if (rb != null)
+                {
+                    Vector3 dir = (targetPos - spawnPos).normalized;
+                    rb.linearVelocity = dir * 25f;
+                }
+
+                // Schedule impact using coroutine
+                StartCoroutine(WaterArrowImpact(targetPos, 0.6f)); // delay depends on speed/distance
+                Destroy(arrow, 3f); // clean up visual arrow
+            }
+
+            timer += barrageTickRate;
+            yield return new WaitForSeconds(barrageTickRate);
+        }
+    }
+    IEnumerator SlowEnemy(Enemy enemy, float duration)
+    {
+        if (enemy == null) yield break;
+
+        // Optional: Implement movement speed reduction inside Enemy script
+        enemy.SetSlowed(true); // You need to implement this
+        yield return new WaitForSeconds(duration);
+        enemy.SetSlowed(false);
+    }   
+    private IEnumerator WaterArrowImpact(Vector3 position, float delay)
+{
+    yield return new WaitForSeconds(delay); // simulate time to hit ground
+
+    // Optionally: play splash VFX here
+    Debug.Log("Water arrow impacted at: " + position);
+
+    Collider[] hitEnemies = Physics.OverlapSphere(position, 2f, enemyLayer); // 2f = splash radius
+    foreach (var hit in hitEnemies)
+    {
+        if (hit.TryGetComponent<Enemy>(out Enemy enemy))
+        {
+            enemy.TakeDamage(barrageDamagePerHit);
+            Debug.Log("Tidal Barrage hit: " + enemy.name);
+        }
+    }
 }
-
-
 }
 
 /***
 
 ## ⚔️ ELEMENTAL CHARACTER ABILITIES
-
-### 🌱 **EARTH – Sword**
-
-| Ability                      | Description                                                                                               |
-| ---------------------------- | --------------------------------------------------------------------------------------------------------- |
-| **Stonewall Slash** (Normal) | Slash the ground to raise a short stone wall that blocks enemy movement or projectiles.                   |
-| **Terra Shatter** (Ultimate) | Charge up and smash the sword down, causing the ground to quake and rupture in a line, launching enemies. |
-
-💡 *Theme*: Defense + heavy knockback/CC (crowd control).
-
----
 
 ### 🌊 **WATER – Bow**
 
