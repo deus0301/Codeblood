@@ -80,7 +80,27 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: waterboss(Clone)
+      parentName: 
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.000000037748947, y: 0, z: -0, w: 1}
+      scale: {x: 290.85672, y: 290.85672, z: 290.85672}
+    - name: node_f3390c4c_ca7a_48e5_9ec5_24f8f37d9260
+      parentName: waterboss(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
+    - name: node_764cfe00_cbb2_4036_b016_89dfa11fd6cb
+      parentName: node_f3390c4c_ca7a_48e5_9ec5_24f8f37d9260
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
+    - name: node_764cfe00_cbb2_4036_b016_89dfa11fd6cb_mesh0
+      parentName: node_764cfe00_cbb2_4036_b016_89dfa11fd6cb
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
