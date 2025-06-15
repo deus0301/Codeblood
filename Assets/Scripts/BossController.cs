@@ -6,7 +6,7 @@ public class BossController : MonoBehaviour
 {
     public Transform player;
     public float followRange = 75f; // Distance within which enemy will start following
-    public float attackRange = 2f;
+    public float attackRange = 50f;
     public float attackCooldown = 1.5f;
     public int attackDamage = 100;
 
@@ -55,8 +55,8 @@ public class BossController : MonoBehaviour
             {
                 switch (currentAttack) 
                 {
-                    case BossAttackType.Melee: 
-                        if (distance <= attackRange)
+                    case BossAttackType.Melee:
+                        if(distance <= attackRange) 
                             Attack(); 
                         break;
                     case BossAttackType.AoE: 

@@ -43,19 +43,12 @@ public class PlayerAttack : MonoBehaviour
     }
     void Update()
     {
-        //if (weaponBehaviour.data != null)
-        //{
-            //weapon = weaponBehaviour.data;
-            //attackDamage = weapon.damage;
-            //attackDistance = weapon.range;
-            //attackSpeed = weapon.cooldown;
-            //abilities = gameObject.GetComponent<PlayerAbilites>();
-            //if (weapon.weaponPrefab.gameObject.layer == LayerMask.NameToLayer("Ranged")) { bulletTracer = GameObject.Find("Bullet").GetComponent<ParticleSystem>(); }
-        //}
+        
     }
     public void Attack()
     {
         if (!readyToAttack || attacking) return;
+        if (!gameObject.GetComponent<WeaponSelector>().weaponChosen || !gameObject.GetComponent<WeaponSelector>().bossChosen) return;
 
         readyToAttack = false;
         attacking = true;
@@ -89,8 +82,14 @@ public class PlayerAttack : MonoBehaviour
             return;
         }
 
-        abilities.TrackMove("normal");
-
+        if (abilities != null)
+        {
+            abilities.TrackMove("normal");
+        }
+        else
+        {
+            Debug.LogWarning("Abilities reference is null when attacking.");
+        }
         //audioSource.pitch = Random.Range(0.9f, 1.1f);
         //audioSource.PlayOneShot(swordSwing);
     }

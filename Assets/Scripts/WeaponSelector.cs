@@ -10,14 +10,15 @@ public class WeaponSelector : MonoBehaviour
     public GameObject weaponPrefab;
     public GameObject currentWeaponInstance;
     public GameObject cam;
+    public GameObject player;
     
     public TMP_Dropdown bossSelect;
     public GameObject[] Bosses;
     public GameObject bossSpawn;
     public GameObject currentBossInstance;
 
-    private bool weaponChosen = false;
-    private bool bossChosen = false;
+    public bool weaponChosen = false;
+    public bool bossChosen = false;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -25,9 +26,14 @@ public class WeaponSelector : MonoBehaviour
     {
         weaponBehavior = GetComponent<WeaponBehaviour>();
         cam = GameObject.Find("Main Camera");
+
         cam.GetComponent<MouseLook>().enabled = false;
         weaponHolder.GetComponent<MouseLook>().enabled = false;
+        
+        gameObject.GetComponent<PlayerAttack>().enabled = false;
+        gameObject.GetComponent<PlayerAbilites>().enabled = false;
         gameObject.GetComponent<PlayerController>().enabled = false;
+
         Cursor.lockState = CursorLockMode.Confined;
     }
 
@@ -62,6 +68,8 @@ public class WeaponSelector : MonoBehaviour
         { 
             cam.GetComponent<MouseLook>().enabled = true;
             gameObject.GetComponent<PlayerController>().enabled = true;
+            gameObject.GetComponent<PlayerAttack>().enabled = true;
+            gameObject.GetComponent<PlayerAbilites>().enabled = true;
             weaponHolder.GetComponent<MouseLook>().enabled = true;
             Cursor.lockState = CursorLockMode.Locked;
         }

@@ -83,7 +83,7 @@ public class PlayerAbilites : MonoBehaviour
 
             case ElementType.Fire:
                 Debug.Log("Casting Flame Whip");
-                StartCoroutine("FlameWhip");
+                StartCoroutine(FlameWhip());
                 break;
 
             case ElementType.Earth:
@@ -152,6 +152,7 @@ public class PlayerAbilites : MonoBehaviour
 
     public void TrackMove(string moveName)
     {
+        if(moveName == null) return;
         if (recentMove.Count >= maxStoredMoves) recentMove.Dequeue();
         recentMove.Enqueue(moveName);
         Debug.Log("Move Tracked: " + moveName);

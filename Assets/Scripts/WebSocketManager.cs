@@ -54,8 +54,6 @@ public class WebSocketManager : MonoBehaviour
         await websocket.Connect();
     }
 
-    private float sendTimer = 0f;
-
     private void Update()
     {
 #if !UNITY_WEBGL || UNITY_EDITOR
