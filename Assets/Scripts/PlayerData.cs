@@ -3,7 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class PlayerData : MonoBehaviour
 {
-    int currentHealth;
+    public int currentHealth;
     public int maxHealth;
 
     void Awake()

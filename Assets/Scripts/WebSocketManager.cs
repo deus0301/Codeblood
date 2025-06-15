@@ -61,28 +61,6 @@ public class WebSocketManager : MonoBehaviour
 #if !UNITY_WEBGL || UNITY_EDITOR
         websocket?.DispatchMessageQueue();
 #endif
-
-        // Send a test message every 2 seconds
-        sendTimer += Time.deltaTime;
-        if (sendTimer >= 2f)
-        {
-            sendTimer = 0f;
-
-            var testData = new TestMessage()
-            {
-                distance = "mid",
-                player_health = "high",
-                boss_health = "mid",
-                skill_ready = true,
-                action_taken = 2,
-                reward = 5,
-                done = false
-            };
-
-            string json = JsonUtility.ToJson(testData);
-            SendMessageToServer(json);
-            Debug.Log("Sent message: " + json);
-        }
     }
 
     [Serializable]

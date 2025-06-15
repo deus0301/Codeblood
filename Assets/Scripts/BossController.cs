@@ -143,5 +143,5 @@ public class BossController : MonoBehaviour
         bossInstance = instance;
         agent = bossInstance.GetComponent<NavMeshAgent>();
     }
-    enum BossAttackType { Melee = 0, AoE = 1, Projectile = 2 }
+    enum BossAttackType { Melee = 0, AoE = 1, Projectile = 2, Idle1 = 3, Idle2 = 4 }
 }

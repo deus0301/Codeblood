@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,7 @@ public class PlayerAbilites : MonoBehaviour
 
     public WeaponData currentWeapon;
     public GameObject cam;
+    public BossController boss;
 
     public float normalCooldown = 5f;
     public float ultimateCooldown = 60f;
@@ -16,13 +18,15 @@ public class PlayerAbilites : MonoBehaviour
     private bool canUseNormal = true;
     private bool canUseUltimate = true;
 
-    private Queue<string> recentMoves = new Queue<string>();
+    private Queue<string> recentMove = new Queue<string>();
     [SerializeField] private WebSocketManager wsManager;
-    private int maxStoredMoves = 5;
+    private int maxStoredMoves = 1;
+    public LayerMask enemyLayer;
 
     void Start()
     {
         cam = GameObject.Find("Main Camera");
+        wsManager = GameObject.Find("WebSocketManager").GetComponent<WebSocketManager>();
     }
 
     void Update()
@@ -33,6 +37,15 @@ public class PlayerAbilites : MonoBehaviour
             {
                 currentWeapon = T.data;
             }
+        }
+        try
+        {
+            if(GameObject.FindWithTag("Enemy").TryGetComponent<BossController>(out BossController E))
+                boss = E;
+        }
+        catch
+        {
+
         }
     }
 
@@ -70,6 +83,7 @@ public class PlayerAbilites : MonoBehaviour
 
             case ElementType.Fire:
                 Debug.Log("Casting Flame Whip");
+                StartCoroutine("FlameWhip");
                 break;
 
             case ElementType.Earth:
@@ -122,7 +136,7 @@ public class PlayerAbilites : MonoBehaviour
     {
         canUseNormal = false;
         CastAbility(currentWeapon.elementType);
-        TrackMove("ability_" + currentWeapon.elementType.ToString().ToLower());
+        TrackMove("ability");
         yield return new WaitForSeconds(normalCooldown);
         canUseNormal = true;
     }
@@ -131,28 +145,60 @@ public class PlayerAbilites : MonoBehaviour
     {
         canUseUltimate = false;
         CastUltimate(currentWeapon.elementType);
-        TrackMove("ultimate_" + currentWeapon.elementType.ToString().ToLower());
+        TrackMove("ultimate");
         yield return new WaitForSeconds(ultimateCooldown);
         canUseUltimate = true;
     }
 
     public void TrackMove(string moveName)
     {
-        if (recentMoves.Count >= maxStoredMoves) recentMoves.Dequeue();
-        recentMoves.Enqueue(moveName);
+        if (recentMove.Count >= maxStoredMoves) recentMove.Dequeue();
+        recentMove.Enqueue(moveName);
         Debug.Log("Move Tracked: " + moveName);
-        
-        if (recentMoves.Count == maxStoredMoves)
+        int attackNumber = 0;
+        switch(moveName)
+        {
+            case "normal":
+                attackNumber = 0; 
+                break;
+            case "ability":
+                attackNumber = 1; 
+                break;
+            case "ultimate":
+                attackNumber = 2; 
+                break;
+        }
+
+        if (recentMove.Count == maxStoredMoves)
         {
             Debug.Log("Moves sent to Enemy AI");
-            AIRequest req = new AIRequest();
-            req.moves = new List<string>(recentMoves);
-            string json = JsonUtility.ToJson(req);
-            wsManager.SendMessageToServer(json);
+            var testData = new TestMessage()
+            {
+                distance = (int)(transform.position.magnitude - boss.gameObject.transform.position.magnitude),
+                player_health = gameObject.GetComponent<PlayerData>().currentHealth,
+                boss_health = boss.gameObject.GetComponent<Enemy>().currentHealth,
+                skill_ready = true,
+                action_taken = attackNumber,
+            };
 
-            recentMoves.Clear(); // Optional
+            string json = JsonUtility.ToJson(testData);
+            wsManager.SendMessageToServer(json);
+            Debug.Log("Sent message: " + json);
+
+            recentMove.Clear(); // Optional
         }
     }
+
+    [Serializable]
+    public class TestMessage
+    {
+        public int distance;
+        public int player_health;
+        public int boss_health;
+        public bool skill_ready;
+        public int action_taken;
+    }
+
     void FrostSlam()
     {
         int damage = 200;
@@ -183,17 +229,51 @@ public class PlayerAbilites : MonoBehaviour
             }
         }
     }
-    void FlameWhipe()
-    {
 
+    float range = 5f;
+    float radius = 1.5f;
+    int dmg = 100;
+    int burndmg = 10;
+    float burnDuration = 5f;
+    float burnInterval = 1f;
+
+    IEnumerator FlameWhip()
+    {
+        Vector3 origin = cam.transform.position;
+        Vector3 direction = cam.transform.forward;
+
+        Debug.DrawRay(origin, direction * range, Color.red, 2f);
+
+        if (Physics.SphereCast(origin, radius, direction, out RaycastHit hit, range, enemyLayer))
+        {
+            if (hit.transform.TryGetComponent<Enemy>(out Enemy enemy))
+            {
+                Debug.Log("Flame Whip hit ");
+                enemy.TakeDamage(dmg);
+
+                // Apply burn
+                StartCoroutine(ApplyBurn(enemy, burndmg, burnDuration, burnInterval));
+            }
+        }   
+
+        yield return null;
+    }
+    IEnumerator ApplyBurn(Enemy target, int dmg, float duration, float tickRate)
+{
+    float timer = 0f;
+
+    while (timer < duration)
+    {
+        if (target == null) yield break;
+
+        target.TakeDamage(dmg);
+        Debug.Log("Burn tick on " + target.name);
+
+        timer += tickRate;
+        yield return new WaitForSeconds(tickRate);
     }
 }
-
-[System.Serializable]
-    public class AIRequest
-    {
-        public List<string> moves;
-    }
+}
 
 /***
 

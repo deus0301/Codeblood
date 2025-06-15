@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    int currentHealth;
+    public int currentHealth;
     public int maxHealth;
     float freezeDuration;
 

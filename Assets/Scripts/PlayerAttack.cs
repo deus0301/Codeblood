@@ -89,7 +89,7 @@ public class PlayerAttack : MonoBehaviour
             return;
         }
 
-        abilities.TrackMove("normal_" + weapon.elementType.ToString().ToLower());
+        abilities.TrackMove("normal");
 
         //audioSource.pitch = Random.Range(0.9f, 1.1f);
         //audioSource.PlayOneShot(swordSwing);
