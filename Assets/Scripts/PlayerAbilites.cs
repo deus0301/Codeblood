@@ -40,7 +40,7 @@ public class PlayerAbilites : MonoBehaviour
         }
         try
         {
-            if(GameObject.FindWithTag("Enemy").TryGetComponent<BossController>(out BossController E))
+            if (GameObject.FindWithTag("Enemy").TryGetComponent<BossController>(out BossController E))
                 boss = E;
         }
         catch
@@ -55,20 +55,12 @@ public class PlayerAbilites : MonoBehaviour
         {
             StartCoroutine("UseAbility");
         }
-        else
-        {
-            Debug.Log("Cant Use shit");
-        }
     }
     public void Ultimate()
     {
         if (canUseUltimate)
         {
             StartCoroutine("UseUltimate");
-        }
-        else
-        {
-            Debug.Log("Cant Use shit");
         }
     }
 
@@ -88,8 +80,8 @@ public class PlayerAbilites : MonoBehaviour
 
             case ElementType.Earth:
                 Debug.Log("Casting Stonewall Slash");
+                StartCoroutine(StonewallSlash());
                 break;
-
             case ElementType.Water:
                 Debug.Log("Casting Piercing Stream");
                 break;
@@ -108,17 +100,19 @@ public class PlayerAbilites : MonoBehaviour
         switch (type)
         {
             case ElementType.Ice:
+                GlacialTomb();
                 Debug.Log("Casting Glacial Tomb");
                 break;
 
             case ElementType.Fire:
                 Debug.Log("Casting Infernal Maelstrom");
+                StartCoroutine(InfernalMaelstrom());
                 break;
 
             case ElementType.Earth:
-                Debug.Log("Casting Terra Shatter");
+                Debug.Log("Casting Stonewall Slash");
+                StartCoroutine(TerraShatter());
                 break;
-
             case ElementType.Water:
                 Debug.Log("Casting Tidal Barrage");
                 break;
@@ -152,21 +146,21 @@ public class PlayerAbilites : MonoBehaviour
 
     public void TrackMove(string moveName)
     {
-        if(moveName == null) return;
+        if (moveName == null) return;
         if (recentMove.Count >= maxStoredMoves) recentMove.Dequeue();
         recentMove.Enqueue(moveName);
         Debug.Log("Move Tracked: " + moveName);
         int attackNumber = 0;
-        switch(moveName)
+        switch (moveName)
         {
             case "normal":
-                attackNumber = 0; 
+                attackNumber = 0;
                 break;
             case "ability":
-                attackNumber = 1; 
+                attackNumber = 1;
                 break;
             case "ultimate":
-                attackNumber = 2; 
+                attackNumber = 2;
                 break;
         }
 
@@ -199,7 +193,7 @@ public class PlayerAbilites : MonoBehaviour
         public bool skill_ready;
         public int action_taken;
     }
-
+    
     void FrostSlam()
     {
         int damage = 200;
@@ -231,7 +225,9 @@ public class PlayerAbilites : MonoBehaviour
         }
     }
 
-    float range = 5f;
+    [Header("Fire Chains")]
+
+    float range = 10f;
     float radius = 1.5f;
     int dmg = 100;
     int burndmg = 10;
@@ -240,6 +236,7 @@ public class PlayerAbilites : MonoBehaviour
 
     IEnumerator FlameWhip()
     {
+        Debug.Log("Flame Whip starts");
         Vector3 origin = cam.transform.position;
         Vector3 direction = cam.transform.forward;
 
@@ -255,54 +252,112 @@ public class PlayerAbilites : MonoBehaviour
                 // Apply burn
                 StartCoroutine(ApplyBurn(enemy, burndmg, burnDuration, burnInterval));
             }
-        }   
+        }
 
         yield return null;
     }
     IEnumerator ApplyBurn(Enemy target, int dmg, float duration, float tickRate)
-{
-    float timer = 0f;
-
-    while (timer < duration)
     {
-        if (target == null) yield break;
+        float timer = 0f;
 
-        target.TakeDamage(dmg);
-        Debug.Log("Burn tick on " + target.name);
+        while (timer < duration)
+        {
+            if (target == null) yield break;
 
-        timer += tickRate;
-        yield return new WaitForSeconds(tickRate);
+            target.TakeDamage(dmg);
+            Debug.Log("Burn tick on " + target.name);
+
+            timer += tickRate;
+            yield return new WaitForSeconds(tickRate);
+        }
     }
+    private float maelstromRadius = 10f;
+    private int maelstromDamage = 500;
+    private float maelstromDuration = 5f;
+    private float maelstromTickRate = 1f;
+    private float pullStrength = 3f;
+
+    private IEnumerator InfernalMaelstrom()
+    {
+        float timer = 0f;
+
+        while (timer < maelstromDuration)
+        {
+            Collider[] hitEnemies = Physics.OverlapSphere(transform.position, maelstromRadius, enemyLayer);
+
+            foreach (Collider enemyCol in hitEnemies)
+            {
+                if (enemyCol.TryGetComponent<Enemy>(out Enemy enemy))
+                {
+                    // Apply damage over time
+                    enemy.TakeDamage(maelstromDamage);
+
+                    // Apply pulling force toward the player
+                    Vector3 pullDir = (transform.position - enemy.transform.position).normalized;
+                    enemy.transform.position += pullDir * pullStrength * Time.deltaTime;
+                }
+            }
+
+            // Optional: Add VFX here
+            timer += maelstromTickRate;
+            yield return new WaitForSeconds(maelstromTickRate);
+        }
+    }
+
+    [Header("Earth Sword")]
+    public GameObject stonewallPrefab;
+    private float stonewallDistance = 4f;
+    private float stonewallDuration = 5f;
+
+    private float shatterRange = 10f;
+    private float shatterWidth = 2f;
+    private int shatterDamage = 600;
+    private float shatterKnockupForce = 8f;
+
+    private IEnumerator StonewallSlash()
+    {
+        Vector3 spawnPos = transform.position + transform.forward * stonewallDistance;
+        Quaternion rotation = Quaternion.LookRotation(-transform.forward); // Face player
+        GameObject wall = Instantiate(stonewallPrefab, spawnPos, rotation);
+
+        yield return new WaitForSeconds(stonewallDuration);
+        Destroy(wall);
+    }
+
+private IEnumerator TerraShatter()
+{
+    Vector3 origin = transform.position;
+    Vector3 forward = transform.forward;
+
+    Debug.DrawRay(origin, forward * shatterRange, Color.green, 1.5f);
+
+    RaycastHit[] hits = Physics.SphereCastAll(origin, shatterWidth, forward, shatterRange, enemyLayer);
+
+    foreach (RaycastHit hit in hits)
+    {
+        if (hit.transform.TryGetComponent<Enemy>(out Enemy enemy))
+        {
+            enemy.TakeDamage(shatterDamage);
+
+            Rigidbody rb = enemy.GetComponent<Rigidbody>();
+            if (rb != null)
+            {
+                rb.AddForce(Vector3.up * shatterKnockupForce, ForceMode.Impulse);
+            }
+
+            Debug.Log("Terra Shatter hit " + enemy.name);
+        }
+    }
+
+    yield return null;
 }
+
+
 }
 
 /***
 
 ## ⚔️ ELEMENTAL CHARACTER ABILITIES
-
----
-
-### 🧊 **ICE – Axe**
-
-| Ability                     | Description                                                                                             |
-| --------------------------- | ------------------------------------------------------------------------------------------------------- |
-| **Frost Slam** (Normal)     | Slam the axe into the ground, freezing enemies in a small radius for 1.5s and dealing damage.           |
-| **Glacial Tomb** (Ultimate) | Summon massive ice spikes from below, freezing all enemies in a wide area and dealing heavy AoE damage. |
-
-💡 *Theme*: Slow enemies down, control space.
-
----
-
-### 🔥 **FIRE – Chains**
-
-| Ability                           | Description                                                                                                 |
-| --------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| **Flame Whip** (Normal)           | Lash forward with chains, dealing damage and igniting enemies for 3 seconds.                                |
-| **Infernal Maelstrom** (Ultimate) | Spin chains in a fiery circle, pulling enemies in and setting the ground ablaze for DOT (damage over time). |
-
-💡 *Theme*: Aggression, burn over time, pull enemies.
-
----
 
 ### 🌱 **EARTH – Sword**
 

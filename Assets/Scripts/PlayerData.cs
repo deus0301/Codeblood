@@ -29,7 +29,6 @@ public class PlayerData : MonoBehaviour
     public void GameOver()
     {
         Debug.Log("Game Over");
-        SceneManager.LoadScene("GameOver", LoadSceneMode.Single);
         
     }
 }
