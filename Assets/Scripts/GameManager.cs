@@ -13,10 +13,10 @@ public class GameManager : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
         wsManager = GameObject.Find("WebSocketManager").GetComponent<WebSocketManager>();
         Scene currentScene = SceneManager.GetActiveScene();
-        wsManager.OnActionReceived += boss.SetNextAttack;
     }
     void OnDestroy()
     {
+        if (wsManager != null && boss != null)
         wsManager.OnActionReceived -= boss.SetNextAttack;
     }
     // Update is called once per frame
@@ -28,5 +28,6 @@ public class GameManager : MonoBehaviour
     {
         bossInstance = instance;
         boss = bossInstance.GetComponent<BossController>();
+        wsManager.OnActionReceived += boss.SetNextAttack;
     }
 }

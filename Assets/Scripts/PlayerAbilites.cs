@@ -14,7 +14,7 @@ public class PlayerAbilites : MonoBehaviour
     public float ultimateCooldown = 60f;
 
     private bool canUseNormal = true;
-    private bool canUseUltimate = false;
+    private bool canUseUltimate = true;
 
     private Queue<string> recentMoves = new Queue<string>();
     [SerializeField] private WebSocketManager wsManager;
@@ -64,9 +64,8 @@ public class PlayerAbilites : MonoBehaviour
         switch (type)
         {
             case ElementType.Ice:
-                // Frost Slam
+                FrostSlam();
                 Debug.Log("Casting Frost Slam");
-                // Add area freeze + damage
                 break;
 
             case ElementType.Fire:
@@ -154,7 +153,40 @@ public class PlayerAbilites : MonoBehaviour
             recentMoves.Clear(); // Optional
         }
     }
+    void FrostSlam()
+    {
+        int damage = 200;
+        float freezeDuration = 5;
+        float radius = 7.5f;
+        Collider[] hit = Physics.OverlapSphere(transform.position, radius);
+        foreach (var enemy in hit)
+        {
+            if (enemy.CompareTag("Enemy"))
+            {
+                enemy.GetComponent<Enemy>().TakeDamage(damage);
+                enemy.GetComponent<Enemy>().Freeze(freezeDuration);
+            }
+        }
+    }
+    void GlacialTomb()
+    {
+        int damage = 500;
+        float freezeDuration = 20f;
+        float radius = 10f;
+        Collider[] hit = Physics.OverlapSphere(transform.position, radius);
+        foreach (var enemy in hit)
+        {
+            if (enemy.CompareTag("Enemy"))
+            {
+                enemy.GetComponent<Enemy>().TakeDamage(damage);
+                enemy.GetComponent<Enemy>().Freeze(freezeDuration);
+            }
+        }
+    }
+    void FlameWhipe()
+    {
 
+    }
 }
 
 [System.Serializable]

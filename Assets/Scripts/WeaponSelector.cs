@@ -26,6 +26,7 @@ public class WeaponSelector : MonoBehaviour
         weaponBehavior = GetComponent<WeaponBehaviour>();
         cam = GameObject.Find("Main Camera");
         cam.GetComponent<MouseLook>().enabled = false;
+        weaponHolder.GetComponent<MouseLook>().enabled = false;
         gameObject.GetComponent<PlayerController>().enabled = false;
         Cursor.lockState = CursorLockMode.Confined;
     }
@@ -61,6 +62,7 @@ public class WeaponSelector : MonoBehaviour
         { 
             cam.GetComponent<MouseLook>().enabled = true;
             gameObject.GetComponent<PlayerController>().enabled = true;
+            weaponHolder.GetComponent<MouseLook>().enabled = true;
             Cursor.lockState = CursorLockMode.Locked;
         }
         

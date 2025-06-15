@@ -43,15 +43,15 @@ public class PlayerAttack : MonoBehaviour
     }
     void Update()
     {
-        if (weaponBehaviour.data != null)
-        {
-            weapon = weaponBehaviour.data;
-            attackDamage = weapon.damage;
-            attackDistance = weapon.range;
-            attackSpeed = weapon.cooldown;
-            abilities = gameObject.GetComponent<PlayerAbilites>();
-            if (weapon.weaponPrefab.gameObject.layer == LayerMask.NameToLayer("Ranged")) { bulletTracer = GameObject.Find("Bullet").GetComponent<ParticleSystem>(); }
-        }
+        //if (weaponBehaviour.data != null)
+        //{
+            //weapon = weaponBehaviour.data;
+            //attackDamage = weapon.damage;
+            //attackDistance = weapon.range;
+            //attackSpeed = weapon.cooldown;
+            //abilities = gameObject.GetComponent<PlayerAbilites>();
+            //if (weapon.weaponPrefab.gameObject.layer == LayerMask.NameToLayer("Ranged")) { bulletTracer = GameObject.Find("Bullet").GetComponent<ParticleSystem>(); }
+        //}
     }
     public void Attack()
     {
@@ -103,6 +103,7 @@ public class PlayerAttack : MonoBehaviour
 
     void AttackRaycast()
     {
+        Debug.Log("Attack raycast sent");
         if (Physics.Raycast(cam.transform.position, cam.transform.forward, out RaycastHit hit, attackDistance, attackLayer))
         {
             Debug.Log("You hitting shit nigga");
@@ -123,5 +124,11 @@ public class PlayerAttack : MonoBehaviour
     {
         weaponInstance = instance;
         animator = weaponInstance.GetComponent<Animator>();
+        weapon = weaponBehaviour.data;
+        attackDamage = weapon.damage;
+        attackDistance = weapon.range;
+        attackSpeed = weapon.cooldown;
+        abilities = gameObject.GetComponent<PlayerAbilites>();
+        if (weapon.weaponPrefab.gameObject.layer == LayerMask.NameToLayer("Ranged")) { bulletTracer = GameObject.Find("Bullet").GetComponent<ParticleSystem>(); }
     }
 }
