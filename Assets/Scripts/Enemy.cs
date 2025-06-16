@@ -45,6 +45,18 @@ public class Enemy : MonoBehaviour
             agent.speed = 4f;
         }
     }
+    public void Stun(float duration)
+    {
+        StartCoroutine(StunRoutine(duration));
+    }
+
+    private IEnumerator StunRoutine(float time)
+    {
+        // Example: disable movement
+        GetComponent<NavMeshAgent>().isStopped = true;
+        yield return new WaitForSeconds(time);
+        GetComponent<NavMeshAgent>().isStopped = false;
+}
 
     void Death()
     {

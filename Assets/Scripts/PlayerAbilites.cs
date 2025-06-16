@@ -69,14 +69,14 @@ public class PlayerAbilites : MonoBehaviour
 
     public void Ability()
     {
-        if (canUseNormal)
+        if (canUseNormal && boss.gameObject != null)
         {
             StartCoroutine("UseAbility");
         }
     }
     public void Ultimate()
     {
-        if (canUseUltimate)
+        if (canUseUltimate && boss.gameObject != null)
         {
             StartCoroutine("UseUltimate");
         }
@@ -107,10 +107,12 @@ public class PlayerAbilites : MonoBehaviour
 
             case ElementType.Air:
                 Debug.Log("Casting Gale Dash");
+                StartCoroutine(GaleDash());
                 break;
 
             case ElementType.Light:
                 Debug.Log("Casting Photon Burst");
+                StartCoroutine(PhotonBurst());
                 break;
         }
     }
@@ -139,10 +141,12 @@ public class PlayerAbilites : MonoBehaviour
 
             case ElementType.Air:
                 Debug.Log("Casting Storm Pulse");
+                StartCoroutine(StormPulse());
                 break;
 
             case ElementType.Light:
                 Debug.Log("Casting Solar Nova");
+                StartCoroutine(SolarNova());
                 break;
         }
     }
@@ -331,7 +335,7 @@ public class PlayerAbilites : MonoBehaviour
 
     private float shatterRange = 10f;
     private float shatterWidth = 2f;
-    private int shatterDamage = 600;
+    private int shatterDamage = 750;
     private float shatterKnockupForce = 50f;
 
     private IEnumerator StonewallSlash()
@@ -379,9 +383,9 @@ public class PlayerAbilites : MonoBehaviour
     private float slowDuration = 3f;
 
     private float barrageRadius = 8f;
-    private int barrageDamagePerHit = 50;
+    private int barrageDamagePerHit = 100;
     private float barrageTickRate = 0.5f;
-    private float barrageDuration = 4f;
+    private float barrageDuration = 8f;
 
     void PiercingStream()
     {
@@ -457,58 +461,203 @@ public class PlayerAbilites : MonoBehaviour
         enemy.SetSlowed(false);
     }   
     private IEnumerator WaterArrowImpact(Vector3 position, float delay)
-{
-    yield return new WaitForSeconds(delay); // simulate time to hit ground
-
-    // Optionally: play splash VFX here
-    Debug.Log("Water arrow impacted at: " + position);
-
-    Collider[] hitEnemies = Physics.OverlapSphere(position, 2f, enemyLayer); // 2f = splash radius
-    foreach (var hit in hitEnemies)
     {
-        if (hit.TryGetComponent<Enemy>(out Enemy enemy))
+        yield return new WaitForSeconds(delay); // simulate time to hit ground
+
+        // Optionally: play splash VFX here
+        Debug.Log("Water arrow impacted at: " + position);
+
+        Collider[] hitEnemies = Physics.OverlapSphere(position, 2f, enemyLayer); // 2f = splash radius
+        foreach (var hit in hitEnemies)
         {
-            enemy.TakeDamage(barrageDamagePerHit);
-            Debug.Log("Tidal Barrage hit: " + enemy.name);
+            if (hit.TryGetComponent<Enemy>(out Enemy enemy))
+            {
+                enemy.TakeDamage(barrageDamagePerHit);
+                Debug.Log("Tidal Barrage hit: " + enemy.name);
+            }
         }
     }
-}
+
+    [Header("Air Abilities")]
+    [SerializeField] private float dashDistance = 8f;
+    [SerializeField] private int dashDamage = 150;
+    [SerializeField] private float dashRadius = 2f;
+
+    [SerializeField] private float pulseRange = 20f;
+    [SerializeField] private float pulseRadius = 6f;
+    [SerializeField] private int pulseDamage = 500;
+    [SerializeField] private float stunDuration = 2f;
+    [SerializeField] private float pullForce = 10f;
+
+    private IEnumerator GaleDash()
+    {
+        Vector3 dashDirection = transform.forward;
+        Vector3 start = transform.position;
+        Vector3 end = start + dashDirection * dashDistance;
+
+        // Optional: dash VFX trail or animation
+
+        float elapsed = 0f;
+        float dashTime = 0.2f;
+
+        CharacterController controller = GetComponent<CharacterController>();
+        while (elapsed < dashTime)
+        {
+            controller.Move(dashDirection * (dashDistance / dashTime) * Time.deltaTime);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        // Damage enemies in dash path
+        Collider[] hit = Physics.OverlapCapsule(start, end, dashRadius, enemyLayer);
+        foreach (Collider col in hit)
+        {
+            if (col.TryGetComponent<Enemy>(out Enemy enemy))
+            {
+                enemy.TakeDamage(dashDamage);
+            }
+        }
+    }
+    private IEnumerator StormPulse()
+    {
+        Debug.Log("Storm Pulse started");
+        Vector3 origin = cam.transform.position;
+        Vector3 dir = cam.transform.forward;
+
+        Ray ray = new Ray(origin, dir);
+        Debug.DrawRay(origin, dir * pulseRange, Color.cyan, 1.5f);
+        if (Physics.Raycast(ray, out RaycastHit hit, pulseRange))
+        {
+            Debug.Log("Storm Pulse hit");
+            Vector3 impactPoint = hit.point;
+
+            Collider[] enemies = Physics.OverlapSphere(impactPoint, pulseRadius, enemyLayer);
+            foreach (Collider col in enemies)
+            {
+                if (col.TryGetComponent<Enemy>(out Enemy enemy))
+                {
+                    Debug.Log("Enemy Damaged and stunned");
+                    enemy.TakeDamage(pulseDamage);
+
+                    // Pull toward impact
+                    Vector3 pullDir = (impactPoint - enemy.transform.position).normalized;
+                    enemy.transform.position += pullDir * pullForce * Time.deltaTime;
+
+                    // Apply stun if you have it
+                    enemy.Stun(stunDuration); // implement this in Enemy.cs
+                }
+            }
+        }
+        else{
+            Debug.Log("Storm Pulse missed");
+        }
+
+        yield return null;
+    }
+
+    [Header("Light Abilities")]
+    [SerializeField] private float burstRange = 50f;
+    [SerializeField] private int burstDamage = 150;
+    [SerializeField] private float burstWidth = 1.5f;
+
+    [SerializeField] private float novaRadius = 25f;
+    [SerializeField] private int novaDamage = 500;
+    [SerializeField] private float novaDelay = 1.5f;
+
+    private IEnumerator PhotonBurst()
+    {
+        Vector3 origin = cam.transform.position;
+        Vector3 direction = cam.transform.forward;
+
+        float duration = 1f;
+        float tickRate = 0.2f;
+        float timePassed = 0f;
+
+        // Optional: visual effect setup
+        GameObject beam = CreateBeam(origin, direction); // If you have a visual prefab
+
+        while (timePassed < duration)
+        {
+            RaycastHit[] hits = Physics.SphereCastAll(origin, burstWidth, direction, burstRange, enemyLayer);
+
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.transform.TryGetComponent<Enemy>(out Enemy enemy))
+                {   
+                    enemy.TakeDamage(burstDamage);
+                    Debug.Log("🔆 Photon Burst hit: " + enemy.name);
+                }
+            }
+
+            Debug.DrawRay(origin, direction * burstRange, Color.yellow, tickRate);
+            yield return new WaitForSeconds(tickRate);
+            timePassed += tickRate;
+        }
+
+        // Cleanup VFX
+        if (beam != null)
+            Destroy(beam);
+    }
+
+    private GameObject CreateBeam(Vector3 origin, Vector3 direction)
+    {
+        GameObject beam = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        beam.transform.position = origin + direction * (burstRange / 2);
+        beam.transform.rotation = Quaternion.LookRotation(direction);
+        beam.transform.Rotate(90, 0, 0); // Cylinder is vertical by default
+        beam.transform.localScale = new Vector3(burstWidth/5, burstRange * 10, burstWidth/5);
+
+        // Appearance
+        Renderer r = beam.GetComponent<Renderer>();
+        r.material.color = Color.yellow;
+        r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+
+        Destroy(beam.GetComponent<Collider>()); // remove physics
+
+        return beam;
+    }
+
+    private IEnumerator SolarNova()
+    {
+        Collider[] enemies = Physics.OverlapSphere(transform.position, novaRadius, enemyLayer);
+        Debug.Log("🌞 Solar Nova will hit: " + enemies.Length + " enemies");
+
+        List<Enemy> targets = new List<Enemy>();
+
+        foreach (Collider col in enemies)
+        {
+            if (col.TryGetComponent<Enemy>(out Enemy enemy))
+            {
+                targets.Add(enemy);
+            }
+        }
+
+        yield return new WaitForSeconds(novaDelay);
+
+        foreach (Enemy target in targets)
+        {
+            if (target != null)
+            {
+                target.TakeDamage(novaDamage);
+                Debug.Log("💥 Solar Nova hit: " + target.name);
+            }
+        }
+    }
+
 }
 
 /***
 
 ## ⚔️ ELEMENTAL CHARACTER ABILITIES
 
-### 🌊 **WATER – Bow**
-
-| Ability                      | Description                                                                            |
-| ---------------------------- | -------------------------------------------------------------------------------------- |
-| **Piercing Stream** (Normal) | Fire an arrow that bursts into a water jet, passing through enemies and slowing them.  |
-| **Tidal Barrage** (Ultimate) | Rain down a storm of water arrows over a large area, dealing continuous splash damage. |
-
-💡 *Theme*: Long range control, AoE harass, slow.
-
----
-
-### 🌬 **AIR – Pistol**
-
-| Ability                    | Description                                                                                            |
-| -------------------------- | ------------------------------------------------------------------------------------------------------ |
-| **Gale Dash** (Normal)     | Dash forward with a burst of wind, leaving behind a slicing wind that damages nearby enemies.          |
-| **Storm Pulse** (Ultimate) | Fire a charged air bullet that explodes in a wind vortex, pulling enemies inward and stunning briefly. |
-
-💡 *Theme*: Speed, mobility, vortex-style disruption.
-
----
-
-### 🌟 **LIGHT – Rifle**
+### **LIGHT Rifle**
 
 | Ability                   | Description                                                                                                              |
 | ------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | **Photon Burst** (Normal) | Fire a piercing laser beam that damages all enemies in a line.                                                           |
-| **Solar Nova** (Ultimate) | Mark enemies for divine judgment — after a short delay, a solar blast hits each marked enemy with high precision damage. |
+| **Solar Nova** (Ultimate) | Mark enemies for divine judgment after a short delay, a solar blast hits each marked enemy with high precision damage. |
 
-💡 *Theme*: High damage, precision, light-based smite effect.
+*Theme*: High damage, precision, light-based smite effect.
 
 ---
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -100,8 +101,7 @@ public class BossController : MonoBehaviour
         // Replace with actual attack logic or animation trigger
         Debug.Log("Enemy Attacks Player!");
         animator.Play("Attack");
-        player.gameObject.TryGetComponent<PlayerData>(out PlayerData data);
-        data.TakeDamage(attackDamage);
+        StartCoroutine(AttackDelay());
 
     }
     void AOE()
@@ -144,4 +144,14 @@ public class BossController : MonoBehaviour
         agent = bossInstance.GetComponent<NavMeshAgent>();
     }
     enum BossAttackType { Melee = 0, AoE = 1, Projectile = 2, Idle1 = 3, Idle2 = 4 }
+    IEnumerator AttackDelay()
+    {
+        yield return new WaitForSeconds(2);
+        float distance = Vector3.Distance(transform.position, player.position);
+        if(distance <= attackRange)
+        {
+            player.gameObject.TryGetComponent<PlayerData>(out PlayerData data);
+            data.TakeDamage(attackDamage);
+        }
+    }
 }
